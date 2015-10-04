@@ -1,0 +1,39 @@
+{
+  "name": "koa-postcss",
+  "version": "0.1.0",
+  "description": "Caching PostCSS middleware for Koa.js",
+  "main": "index.js",
+  "scripts": {
+    "test": "tape test/*.js | tap-spec"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/HowlingEverett/koa-postcss.git"
+  },
+  "keywords": [
+    "postcss",
+    "koa",
+    "middleware"
+  ],
+  "author": "Justin Marrington (@howlingeverett)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/HowlingEverett/koa-postcss/issues"
+  },
+  "homepage": "https://github.com/HowlingEverett/koa-postcss#readme",
+  "devDependencies": {
+    "co-supertest": "0.0.10",
+    "koa": "^1.0.0",
+    "koa-static": "^1.4.9",
+    "sinon": "^1.17.1",
+    "supertest": "^1.1.0",
+    "tap": "^2.0.0",
+    "tape": "^4.2.0"
+  },
+  "peerDependencies": {
+    "postcss": ">=5.0"
+  },
+  "dependencies": {
+    "es6-promisify": "^3.0.0"
+  }
+}
