@@ -8,8 +8,11 @@ re-running only when you've udpated the source files.
 koa-postcss is available on npm:
 
 ```
-npm install koa-postcss
+npm install koa-postcss postcss
 ```
+
+*Note:* PostCSS is a peer dependency, so you control what version to install
+into your project. However, koa-postcss only supports PostCSS >5.0.
 
 ## Usage
 
