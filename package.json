@@ -34,6 +34,8 @@
     "postcss": ">=5.0"
   },
   "dependencies": {
-    "es6-promisify": "^3.0.0"
+    "es6-promisify": "^3.0.0",
+    "glob": "^5.0.15",
+    "underscore": "^1.8.3"
   }
 }
