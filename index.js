@@ -62,28 +62,27 @@ function processPromise(inputFile, options) {
   let inCss;
   try {
     return readFile(src, {encoding: 'utf8'})
-    .then(function(css) {
-      inCss = css;
-      return shouldRecompile(src, options.dest);
-    })
-    .then(function(recompile) {
-      if (!recompile) {
-        throw new FileNotDirtyError('This file does not require recompiling');
-      }
-      return markImports(inCss, src);
-    })
-    .then(function() {
-      let destFile = path.resolve(options.dest, path.basename(src));
-      return mkdirp(destFile);
-    })
-    .then(function() {
-      return postcss(options.plugins)
-        .process(inCss, {from: options.src, to: options.dest});
-    })
-    .then(function(processedCss) {
-      let destFile = path.resolve(options.dest, path.basename(src));
-      return writeFile(destFile, processedCss, {encoding: 'utf8'});
-    });
+      .then(function(css) {
+        inCss = css;
+        return shouldRecompile(src, options.dest);
+      })
+      .then(function(recompile) {
+        if (!recompile) {
+          throw new FileNotDirtyError('This file does not require recompiling');
+        }
+        return markImports(inCss, src);
+      })
+      .then(function() {
+        return mkdirp(options.dest);
+      })
+      .then(function() {
+        return postcss(options.plugins)
+          .process(inCss, {from: options.src, to: options.dest});
+      })
+      .then(function(processedCss) {
+        let destFile = path.resolve(options.dest, path.basename(src));
+        return writeFile(destFile, processedCss, {encoding: 'utf8'});
+      });
   } catch (error) {
     // If we short-circuited because of a FileNotDirtyError, return a value
     // that will be automatically resolved as a 'successful' promise
