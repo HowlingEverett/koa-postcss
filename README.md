@@ -13,10 +13,10 @@ npm install koa-postcss
 
 ## Usage
 
-Load koa-postcss as with any other koa middleware. At the moment, it only supports processing a
-single source entrypoint per config (that will probably change soon, though), but if you use
-@imports in your CSS with a relevant postcss plugin, changing your imports will correctly trigger
-a re-run.
+Load koa-postcss as with any other koa middleware. Pass a single file or a glob
+as the src option, the plugins you want to use to process your CSS, and a
+destination directory. If you're using `@import` in your source CSS files (i.e.
+via postcss-import or cssnext), modifying imports will trigger a recompile.
 
 You'll also want to use a static file middleware to serve the processed CSS.
 
@@ -30,14 +30,14 @@ var serve = require('koa-static');
 var app = koa();
 
 // koa-postcss middleware. src, dest, and plugins are all required
-app.use({
-    src: './src/css/main.css',
-    dest: './public/css/main.css',
+app.use(postcss({
+    src: './src/css/*.css',
+    dest: './public/css',
     plugins: [
         cssImport(),
         autoprefixer({browsers: ['last 2 versions']})
     ]
-});
+}));
 app.use(serve('./public'));
 
 // GET requests will now recompile /src/css/main.css to /public/css/main.css whenever the source
@@ -45,3 +45,26 @@ app.use(serve('./public'));
 
 ```
 
+## Imports
+
+If you're using `@import`, don't try to include your import files in the `src`
+glob, or the middleware will unnecessarily process these files separately and
+write them to your dest directory. Either use a glob that won't match these
+files, or optionally exclude your imports in the optional 'ignore' option. This
+pattern or array of patterns will be passed directly to
+glob: https://github.com/isaacs/node-glob
+
+```js
+app.use(postcss({
+    src: './src/css/*.css',
+    dest: './public',
+    plugins: [
+        cssImport(),
+        autoprefixer({browsers: ['last 2 versions']})
+    ],
+    ignore: [
+        './src/css/import.css',
+        './src/css/other-import.css'
+    ]
+}));
+```
