@@ -1,7 +1,7 @@
 # PostCSS Koa Middleware
 
-This middleware runs source CSS through a PostCSS plugin pipeline, and caches the results. It
-simply 
+This middleware runs source CSS through a PostCSS plugin pipeline, and caches the results,
+re-running only when you've udpated the source files.
 
 ## Installation
 
@@ -20,7 +20,7 @@ a re-run.
 
 You'll also want to use a static file middleware to serve the processed CSS.
 
-```
+```node
 var koa = require('koa');
 var postcss = require('koa-postcss');
 var import = require('postcss-import');
