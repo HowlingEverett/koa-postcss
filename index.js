@@ -4,7 +4,7 @@ let path = require('path');
 var ohMyGlob = require('glob');
 let postcss = require('postcss');
 let promisify = require('es6-promisify');
-let _ = require('underscore');
+var mkdirp = promisify(require('mkdirp'));
 
 // If the input CSS file includes imports, we'll cache them by id so that we
 // can check their mtimes for determining if we should recompile the whole file.
@@ -60,7 +60,8 @@ module.exports = function(options) {
 function processPromise(inputFile, options) {
   let src = path.resolve(options.cwd, inputFile);
   let inCss;
-  return readFile(src, {encoding: 'utf8'})
+  try {
+    return readFile(src, {encoding: 'utf8'})
     .then(function(css) {
       inCss = css;
       return shouldRecompile(src, options.dest);
@@ -72,13 +73,26 @@ function processPromise(inputFile, options) {
       return markImports(inCss, src);
     })
     .then(function() {
+      let destFile = path.resolve(options.dest, path.basename(src));
+      return mkdirp(destFile);
+    })
+    .then(function() {
       return postcss(options.plugins)
         .process(inCss, {from: options.src, to: options.dest});
     })
     .then(function(processedCss) {
-      var destFile = path.resolve(options.dest, path.basename(src));
+      let destFile = path.resolve(options.dest, path.basename(src));
       return writeFile(destFile, processedCss, {encoding: 'utf8'});
     });
+  } catch (error) {
+    // If we short-circuited because of a FileNotDirtyError, return a value
+    // that will be automatically resolved as a 'successful' promise
+    if (error instanceof FileNotDirtyError) {
+      return true;
+    }
+    // Otherwise it's a real error so throw on
+    throw error;
+  }
 }
 
 function FileNotDirtyError(message) {

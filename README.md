@@ -43,8 +43,8 @@ app.use(postcss({
 }));
 app.use(serve('./public'));
 
-// GET requests will now recompile /src/css/main.css to /public/css/main.css whenever the source
-// file changes, or any of its imports change.
+// GET requests will now recompile /src/css/main.css to /public/css/main.css
+// whenever the source file changes, or any of its imports change.
 
 ```
 

@@ -1,3 +1,8 @@
+# 0.3.0
+
+Now using [mkdirp](https://github.com/substack/node-mkdirp) to create the
+destination directory if it doesn't already exist.
+
 # 0.2.0
 
 koa-postcss now supports passing globs as src patterns.
