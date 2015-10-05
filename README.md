@@ -34,7 +34,7 @@ app.use({
     src: './src/css/main.css',
     dest: './public/css/main.css',
     plugins: [
-        import(),
+        cssImport(),
         autoprefixer({browsers: ['last 2 versions']})
     ]
 });
