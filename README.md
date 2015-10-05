@@ -23,7 +23,7 @@ You'll also want to use a static file middleware to serve the processed CSS.
 ```node
 var koa = require('koa');
 var postcss = require('koa-postcss');
-var import = require('postcss-import');
+var cssImport = require('postcss-import');
 var autoprefixer = require('autoprefixer');
 var serve = require('koa-static');
 
