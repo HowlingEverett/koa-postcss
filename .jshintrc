@@ -21,5 +21,6 @@
     "shadow": true,
     "validthis": true,
     "node": true,
+    "mocha": true,
     "esnext": true
 }

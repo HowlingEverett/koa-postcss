@@ -1,3 +1,14 @@
+# 0.4.0
+
+Taking a hint from node-sass-middleware, we now only attempt to process css
+on requests to actual CSS files. This means that glob source files are no longer
+necessary, since we only try to process a source CSS file with the same name
+as the CSS file on the request.
+
+E.g. `/public/css/main.css` will look for an input file /my/source/dir/main.css`
+. We don't have to play around with ignoring imports now, since each request
+will have a single entrypoint.
+
 # 0.3.0
 
 Now using [mkdirp](https://github.com/substack/node-mkdirp) to create the
