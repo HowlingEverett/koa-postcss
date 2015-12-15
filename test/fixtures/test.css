@@ -1,0 +1,4 @@
+h1 {
+  transform: translateX(30px);
+  filter: blur(3px);
+}

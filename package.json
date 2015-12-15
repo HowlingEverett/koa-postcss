@@ -1,10 +1,10 @@
 {
   "name": "koa-postcss",
-  "version": "0.3.2",
+  "version": "0.4.0",
   "description": "Caching PostCSS middleware for Koa.js",
   "main": "index.js",
   "scripts": {
-    "test": "tape test/*.js | tap-spec"
+    "test": "mocha test/*.js"
   },
   "repository": {
     "type": "git",
@@ -22,20 +22,20 @@
   },
   "homepage": "https://github.com/HowlingEverett/koa-postcss#readme",
   "devDependencies": {
-    "co-supertest": "0.0.10",
+    "autoprefixer": "^6.1.2",
     "koa": "^1.0.0",
     "koa-static": "^1.4.9",
+    "mocha": "^2.3.4",
+    "postcss": "^5.0.12",
+    "should": "^8.0.1",
     "sinon": "^1.17.1",
-    "supertest": "^1.1.0",
-    "tap": "^2.0.0",
-    "tape": "^4.2.0"
+    "supertest-koa-agent": "^0.2.1"
   },
   "peerDependencies": {
     "postcss": ">=5.0"
   },
   "dependencies": {
     "es6-promisify": "^3.0.0",
-    "glob": "^5.0.15",
     "mkdirp": "^0.5.1"
   }
 }

@@ -1,30 +1,73 @@
-'use strict';
+"use strict";
 
-var fs = require('fs');
+let fs = require("fs");
+let path = require("path");
 
-var test = require('tape');
-var sinon = require('sinon');
+let should = require("should");
+let agent = require("supertest-koa-agent");
+let koa = require("koa");
+let autoprefixer = require("autoprefixer");
 
-var middleware = require('../');
+let postcss = require("../index");
 
-var basicCss = `
-.centred-block {
-    transition: transform 300 ease-in-out;
-    transform: translateX(0);
-}
-.centred-block:hover {
-    transform: translateX(30px);
-}
-`;
+describe("PostCSS Koa Middleware", () => {
+  let request;
+  before(() => {
+    let app = koa();
+    app.use(postcss({
+      src: "./fixtures",
+      dest: "./fixtures/out",
+      cwd: __dirname,
+      plugins: [
+        autoprefixer()
+      ]
+    }));
+    app.use(function*() {
+      this.body = "Ok";
+    });
+    request = agent(app);
+  });
 
-test('Transforms single css file on request', function(t) {
-    sinon.stub(fs, 'readFile').yieldAsync(null, basicCss);
-    sinon.stub(fs, 'writeFile').yieldAsync(null);
-    sinon.stub(fs, 'stat').yieldAsync(null, {
-        mtime: Date.now()
+  it("should pass through requests that aren't to CSS files", (done) => {
+    request.get("/path/to/app")
+      .end(() => {
+        fs.stat(path.join(__dirname, "fixtures/out/test.css"), (err) => {
+          should.exist(err);
+          err.code.should.match(/ENOENT/);
+          done();
+        });
+      });
+  });
+
+  it("should write output file with the same name as the requested file",
+    (done) => {
+      request.get("/public/css/test.css")
+        .end(() => {
+          fs.stat(path.resolve(__dirname, "fixtures/out/test.css"),
+            (err, stat) => {
+              should.not.exist(err);
+              should.exist(stat);
+              done();
+            });
+        });
     });
 
-    fs.readFile.restore();
-    fs.writeFile.restore();
-    t.end();
+  it("should process the input file with provided PostCSS plugins", (done) => {
+    request.get("/public/css/test.css")
+      .end(() => {
+        fs.readFile(path.resolve(__dirname, "fixtures/out/test.css"), "utf8",
+          (err, content) => {
+            should.not.exist(err);
+            content.should.match(/-webkit-transform/);
+            content.should.match(/-webkit-filter/);
+            done();
+          });
+      });
+  });
+
+  afterEach((done) => {
+    fs.unlink(path.resolve(__dirname, "fixtures/out/test.css"), () => {
+      done();
+    });
+  });
 });
