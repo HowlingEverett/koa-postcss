@@ -98,13 +98,14 @@ function processPromise(inputFile, options) {
   }
 }
 
-function FileNotDirtyError(message) {
-  this.name = "FileNotDirtyError";
-  this.message = message;
-  this.stack = (new Error()).stack;
+class FileNotDirtyError extends Error {
+  constructor(message) {
+    super(message);
+
+    this.name = "FileNotDirtyError";
+    this.message = message;
+  }
 }
-FileNotDirtyError.prototype = Object.create(Error.prototype);
-FileNotDirtyError.prototype.constructor = FileNotDirtyError;
 
 function *shouldRecompile(cssInputPath, cssOutputPath) {
   try {
@@ -142,9 +143,16 @@ function *checkImports(cssInputPath, cssOutputPath, outputMtime) {
   }
 
   // Otherwise determine if we need to recompile based on the imports
-  for (let i = 0; i < nodes.length; i++) {
-    let imported = nodes[i];
-    let importedMtime = yield stat(imported);
+  for (let imported of nodes) {
+    try {
+      let cssSrcDirectory = path.dirname(cssInputPath);
+      subFilePath = path.resolve(cssSrcDirectory, imported);
+      let importedMtime = yield stat(subFilePath).mtime;
+    } catch (e) {
+
+      // If stat errored, the import probably doesn't exists
+      return false;
+    }
     let importDirty = importedMtime > outputMtime;
     if (!importDirty) {
       importDirty = yield shouldRecompile(imported, cssOutputPath);
@@ -169,7 +177,7 @@ function *markImports(cssContent, cssSrcPath) {
     if (!imports[cssSrcPath]) {
       imports[cssSrcPath] = [];
     }
-    let cssImport = cssNode.params.replace(/"|"/g, "");
+    let cssImport = cssNode.params.replace(/"|'/g, "");
     imports[cssSrcPath] = cssImport;
     let importPath = cssImport;
     if (!path.extname(cssImport)) {

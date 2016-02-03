@@ -65,6 +65,30 @@ describe("PostCSS Koa Middleware", () => {
       });
   });
 
+  it("should only process the input file if the compiled file is outdated",
+    (done) => {
+      request.get("/public/css/test.css")
+        .end(() => {
+          fs.stat(path.resolve(__dirname, "fixtures/out/test.css"),
+            (err, stat) => {
+              if (err) {
+                return done(err);
+              }
+              request.get("/public/css/test.css")
+                .end(() => {
+                  fs.stat(path.resolve(__dirname, "fixtures/out/test.css"),
+                    (err, stat2) => {
+                      if (err) {
+                        return done(err);
+                      }
+                      stat.mtime.should.match(stat2.mtime);
+                      done();
+                    });
+                });
+            });
+        })
+    });
+
   afterEach((done) => {
     fs.unlink(path.resolve(__dirname, "fixtures/out/test.css"), () => {
       done();

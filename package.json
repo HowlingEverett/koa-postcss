@@ -1,6 +1,6 @@
 {
   "name": "koa-postcss",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "description": "Caching PostCSS middleware for Koa.js",
   "main": "index.js",
   "scripts": {
