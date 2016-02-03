@@ -81,7 +81,7 @@ describe("PostCSS Koa Middleware", () => {
                       if (err) {
                         return done(err);
                       }
-                      stat.mtime.should.match(stat2.mtime);
+                      stat.mtime.getTime().should.equal(stat2.mtime.getTime());
                       done();
                     });
                 });

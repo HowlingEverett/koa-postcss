@@ -1,5 +1,10 @@
 # Release History
 
+## 0.4.2
+
+Remove import checking for now since it's not working and causes processing to
+always run.
+
 ## 0.4.1
 
 Fixed a bug with the compile checks causing processing to run on every request,
